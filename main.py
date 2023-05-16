@@ -15,6 +15,7 @@ async def cmd_start(message):
     user_id = message.from_user.id
     checker = database.cheсk_user(user_id)
     if checker:
+        await message.answer_sticker('CAACAgIAAxkBAAIFYmRjeHZS7w1EnHLodGf22k7GXGT3AAKTLQACrFEYS3DrE5B4jXmXLwQ')
         await message.answer('Выберите раздел ⬇️', reply_markup=buttons.menu_kb())
     else:
         await message.answer('Привет. Это бот для скачивания музыки 🎶\nВведите ваш возраст', reply_markup=buttons.age_kb())
@@ -139,7 +140,6 @@ async def list_users_age(message):
 
     else:
         await message.answer('Вы не являетесь администратором 🔒т\nВыберите раздел ⬇️', reply_markup=buttons.menu_kb())
-
 
 @dp.message_handler(content_types=['text'])
 async def search_music(message):
