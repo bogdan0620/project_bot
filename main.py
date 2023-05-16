@@ -125,7 +125,7 @@ async def list_users(message):
             await message.answer(users, reply_markup=buttons.admin_kb())
         else:
             await message.answer('База пуста 📂', reply_markup=buttons.admin_kb())
-@dp.message_handler(lambda message: message.text == 'Список пользователей')
+@dp.message_handler(lambda message: message.text == 'Список возрастов пользователей')
 async def list_users_age(message):
     if message.from_user.id == 1097387511:
         user = database.get_users()
