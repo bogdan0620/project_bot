@@ -114,9 +114,9 @@ async def add_singer(message, state=Music_admin.getting_singer_music):
     await state.finish()
     await message.answer('Выберите действие ⬇️', reply_markup=buttons.admin_kb())
 
-@dp.message_handler(lambda message: message.text == 'Список пользователей' or 'Список возрастов пользователей')
+@dp.message_handler(lambda message: message.text == 'Список пользователей')
 async def list_users(message):
-    if message.text == 'Список пользователей' and message.from_user.id == 1097387511:
+    if message.from_user.id == 1097387511:
         user = database.get_users()
         if user:
             users = ''
@@ -125,8 +125,9 @@ async def list_users(message):
             await message.answer(users, reply_markup=buttons.admin_kb())
         else:
             await message.answer('База пуста 📂', reply_markup=buttons.admin_kb())
-
-    elif message.text == 'Список возрастов пользователей' and message.from_user.id == 1097387511:
+@dp.message_handler(lambda message: message.text == 'Список пользователей')
+async def list_users_age(message):
+    if message.from_user.id == 1097387511:
         user = database.get_users()
         if user:
             users = ''
@@ -137,7 +138,7 @@ async def list_users(message):
             await message.answer('База пуста 📂', reply_markup=buttons.admin_kb())
 
     else:
-        await message.answer('Вы не являетесь администратором 🔒\nВыберите раздел ⬇️', reply_markup=buttons.menu_kb())
+        await message.answer('Вы не являетесь администратором 🔒т\nВыберите раздел ⬇️', reply_markup=buttons.menu_kb())
 
 
 @dp.message_handler(content_types=['text'])
