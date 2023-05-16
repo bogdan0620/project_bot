@@ -74,7 +74,7 @@ async def getting_singer(message, state=Music_user.getting_singer_music):
 @dp.message_handler(commands=['admin'])
 async def login_admin(message):
     if message.from_user.id == 1097387511:
-        await message.answer('Вы вошли как администратор 🔓\nВыберите раздел ⬇️', reply_markup=buttons.add_music_kb())
+        await message.answer('Вы вошли как администратор 🔓\nВыберите раздел ⬇️', reply_markup=buttons.admin_kb())
     else:
         await message.answer('Вы не являетесь администратором 🔒\nВыберите раздел ⬇️', reply_markup=buttons.menu_kb())
 
@@ -112,7 +112,33 @@ async def add_singer(message, state=Music_admin.getting_singer_music):
     database.add_music(tg_file_id, name, singer)
     await message.answer('Трек успешно добавлен в базу ✅')
     await state.finish()
-    await message.answer('Выберите действие ⬇️', reply_markup=buttons.add_music_kb())
+    await message.answer('Выберите действие ⬇️', reply_markup=buttons.admin_kb())
+
+@dp.message_handler(lambda message: message.text == 'Список пользователей' or 'Список возрастов пользователей')
+async def list_users(message):
+    if message.text == 'Список пользователей' and message.from_user.id == 1097387511:
+        user = database.get_users()
+        if user:
+            users = ''
+            for i in user:
+                users += f'{i[0]}. Имя: {i[2]}\nВозраст: {i[3]}\nTG ID: {i[1]}\n'
+            await message.answer(users, reply_markup=buttons.admin_kb())
+        else:
+            await message.answer('База пуста 📂', reply_markup=buttons.admin_kb())
+
+    elif message.text == 'Список возрастов пользователей' and message.from_user.id == 1097387511:
+        user = database.get_users()
+        if user:
+            users = ''
+            for i in user:
+                users += f'{i[0]}. Возраст: {i[3]}\n'
+            await message.answer(users, reply_markup=buttons.admin_kb())
+        else:
+            await message.answer('База пуста 📂', reply_markup=buttons.admin_kb())
+
+    else:
+        await message.answer('Вы не являетесь администратором 🔒\nВыберите раздел ⬇️', reply_markup=buttons.menu_kb())
+
 
 @dp.message_handler(content_types=['text'])
 async def search_music(message):
@@ -126,7 +152,7 @@ async def search_music(message):
 
     else:
         if message.text == '/admin' and message.from_user.id == 1097387511:
-            await message.answer('Вы вошли как администратор 🔓\nВыберите раздел ⬇️', reply_markup=buttons.add_music_kb())
+            await message.answer('Вы вошли как администратор 🔓\nВыберите раздел ⬇️', reply_markup=buttons.admin_kb())
 
         elif message.text == '/admin':
             await message.answer('Вы не являетесь администратором 🔒\nВыберите раздел ⬇️', reply_markup=buttons.menu_kb())
@@ -137,9 +163,9 @@ async def search_music(message):
                 catalog = '🧾 Каталог:\n\n'
                 for i in user:
                         catalog += f'{i[0]}. Название: {i[2]}\nИсполнитель: {i[3]}\n'
-                await message.answer(catalog, reply_markup=buttons.add_music_kb())
+                await message.answer(catalog, reply_markup=buttons.admin_kb())
             else:
-                await message.answer('База пуста 📂', reply_markup=buttons.add_music_kb())
+                await message.answer('База пуста 📂', reply_markup=buttons.admin_kb())
 
         elif message.text == '/catalog':
             user = database.get_all_music()
@@ -153,6 +179,7 @@ async def search_music(message):
 
         else:
             await message.answer('Выберите раздел ⬇️', reply_markup=buttons.menu_kb())
+
 
 
 @dp.message_handler()

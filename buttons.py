@@ -12,14 +12,15 @@ def menu_kb():
     kb = ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     button = KeyboardButton('Найти музыку по названию 🔎')
     button2 = KeyboardButton('Найти музыку по исполнителю 🔎')
-    # button3 = KeyboardButton('Рандомные 5 песен')
     kb.add(button, button2)
     return kb
 
 
-def add_music_kb():
+def admin_kb():
     kb = ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     button = KeyboardButton('Добавить музыку 📨')
+    button_user = KeyboardButton('Список пользователей')
+    button_user2 = KeyboardButton('Список возрастов пользователей')
     button2 = KeyboardButton('⏪ Выйти из меню администратора')
-    kb.add(button, button2)
+    kb.add(button, button_user, button_user2, button2)
     return kb

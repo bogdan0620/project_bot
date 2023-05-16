@@ -3,12 +3,9 @@ import sqlite3
 connection = sqlite3.connect('users.db')
 sql = connection.cursor()
 
-def db_start():
-    connection = sqlite3.connect('users.db')
-    sql = connection.cursor()
-    sql.execute('CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY AUTOINCREMENT, tg_id INTEGER, name TEXT, age INTEGER);')
-    sql.execute('CREATE TABLE IF NOT EXISTS music (music_id INTEGER PRIMARY KEY AUTOINCREMENT, tg_file_id INTEGER, name TEXT, singer TEXT);')
-    connection.commit()
+sql.execute('CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY AUTOINCREMENT, tg_id INTEGER, name TEXT, age INTEGER);')
+sql.execute('CREATE TABLE IF NOT EXISTS music (music_id INTEGER PRIMARY KEY AUTOINCREMENT, tg_file_id INTEGER, name TEXT, singer TEXT);')
+connection.commit()
 
 def add_user(tg_id, name, age):
     connection = sqlite3.connect('users.db')
