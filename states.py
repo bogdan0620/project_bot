@@ -11,3 +11,4 @@ class Music_admin(StatesGroup):
 class Music_user(StatesGroup):
     getting_name_music = State()
     getting_singer_music = State()
+    getting_num_music = State()

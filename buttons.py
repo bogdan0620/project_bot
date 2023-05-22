@@ -10,9 +10,10 @@ def age_kb():
 
 def menu_kb():
     kb = ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
+    button0 = KeyboardButton('Выбрать музыку по номеру 🔢')
     button = KeyboardButton('Найти музыку по названию 🔎')
     button2 = KeyboardButton('Найти музыку по исполнителю 🔎')
-    kb.add(button, button2)
+    kb.add(button0, button, button2)
     return kb
 
 

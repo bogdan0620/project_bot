@@ -69,7 +69,22 @@ async def getting_singer(message, state=Music_user.getting_singer_music):
         await message.answer_audio(result2)
         await message.answer(result1, reply_markup=buttons.menu_kb())
     else:
+        await message.answer('Ничего не найдено 📂', reply_markup=buttons.menu_kb())\
+
+@dp.message_handler(content_types=['text'], state=Music_user.getting_num_music)
+async def getting_singer(message, state=Music_user.getting_num_music):
+    m = message.text
+    user = database.get_music_num(m)
+    if user:
+        result1 = '⤵️ Вот что есть в базе:\n\n'
+        for i in user:
+            result1 += f'{i[0]}. Название: {i[2]}\nИсполнитель: {i[3]}\n'
+            result2 = f'{i[1]}'
+        await message.answer_audio(result2)
+        await message.answer(result1, reply_markup=buttons.menu_kb())
+    else:
         await message.answer('Ничего не найдено 📂', reply_markup=buttons.menu_kb())
+
     await state.finish()
 
 
@@ -151,6 +166,10 @@ async def search_music(message):
     elif message.text == 'Найти музыку по исполнителю 🔎':
         await message.answer('Введите имя', reply_markup=ReplyKeyboardRemove())
         await Music_user.getting_singer_music.set()
+
+    elif message.text == 'Выбрать музыку по номеру 🔢':
+        await message.answer('Введите номер', reply_markup=ReplyKeyboardRemove())
+        await Music_user.getting_num_music.set()
 
     else:
         if message.text == '/admin' and message.from_user.id == 1097387511:

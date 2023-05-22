@@ -41,6 +41,12 @@ def get_all_music():
     user = sql.execute('SELECT * FROM music').fetchall()
     return user
 
+def get_music_num(m):
+    connection = sqlite3.connect('users.db')
+    sql = connection.cursor()
+    music = sql.execute('SELECT * FROM music WHERE music_id == "{admin}"'.format(admin=m)).fetchall()
+    return music
+
 def get_music_name(m):
     connection = sqlite3.connect('users.db')
     sql = connection.cursor()
