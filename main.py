@@ -69,7 +69,8 @@ async def getting_singer(message, state=Music_user.getting_singer_music):
         await message.answer_audio(result2)
         await message.answer(result1, reply_markup=buttons.menu_kb())
     else:
-        await message.answer('Ничего не найдено 📂', reply_markup=buttons.menu_kb())\
+        await message.answer('Ничего не найдено 📂', reply_markup=buttons.menu_kb())
+    await state.finish()
 
 @dp.message_handler(content_types=['text'], state=Music_user.getting_num_music)
 async def getting_singer(message, state=Music_user.getting_num_music):
@@ -84,7 +85,6 @@ async def getting_singer(message, state=Music_user.getting_num_music):
         await message.answer(result1, reply_markup=buttons.menu_kb())
     else:
         await message.answer('Ничего не найдено 📂', reply_markup=buttons.menu_kb())
-
     await state.finish()
 
 
