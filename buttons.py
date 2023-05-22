@@ -1,12 +1,10 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-import database
 
 def age_kb():
     kb = ReplyKeyboardMarkup(resize_keyboard=True)
     button = KeyboardButton('Зачем нужен возраст?')
     kb.add(button)
     return kb
-
 
 def menu_kb():
     kb = ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
@@ -15,7 +13,6 @@ def menu_kb():
     button2 = KeyboardButton('Найти музыку по исполнителю 🔎')
     kb.add(button0, button, button2)
     return kb
-
 
 def admin_kb():
     kb = ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)

@@ -67,7 +67,3 @@ def cheсk_user(user_id):
         return True
     else:
         return False
-
-
-
-
