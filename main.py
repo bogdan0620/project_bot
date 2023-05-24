@@ -44,6 +44,10 @@ async def age_user(message, state=GetAge.getting_age):
 
 @dp.message_handler(content_types=['text'], state=Music_user.getting_name_music)
 async def getting_name(message, state=Music_user.getting_name_music):
+    if message.text == '◀️ Назад':
+        await message.answer('Выберите раздел ⬇️', reply_markup=buttons.menu_kb())
+        await state.finish()
+        return
     m = message.text
     user = database.get_music_name(m)
     if user:

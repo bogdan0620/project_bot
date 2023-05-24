@@ -1,5 +1,11 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
+def back_kb():
+    kb = ReplyKeyboardMarkup(resize_keyboard=True)
+    button = KeyboardButton('◀️ Назад')
+    kb.add(button)
+    return kb
+
 def age_kb():
     kb = ReplyKeyboardMarkup(resize_keyboard=True)
     button = KeyboardButton('Зачем нужен возраст?')
