@@ -142,7 +142,7 @@ async def list_users(message):
         if user:
             users = ''
             for i in user:
-                users += f'{i[0]}. Имя: {i[2]}\nВозраст: {i[3]}\nTG ID: {i[1]}\n'
+                users += f'{i[0]}. Пользователь: {i[2]}\nВозраст: {i[3]}\nTG ID: {i[1]}\n'
             await message.answer(users, reply_markup=buttons.admin_kb())
         else:
             await message.answer('База пуста 📂', reply_markup=buttons.admin_kb())
