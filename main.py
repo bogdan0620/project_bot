@@ -25,11 +25,11 @@ async def cmd_start(message):
         await message.answer('Привет. Это бот для скачивания музыки 🎶\nВведите ваш возраст', reply_markup=buttons.age_kb())
         await GetAge.getting_age.set()
 
-users_ages = [str(i) for i in range(10, 81)]
-
 @dp.message_handler(state=GetAge.getting_age, content_types=['text'])
 async def age_user(message, state=GetAge.getting_age):
     user_answer = message.text
+    users_ages = [str(i) for i in range(10, 81)]
+
     if user_answer == "Зачем нужен возраст?":
         await message.answer('Возраст нужен для наилучшей персонализации музыки под определенный возраст (скоро)\nВведите возраст', reply_markup=ReplyKeyboardRemove())
 
@@ -45,7 +45,7 @@ async def age_user(message, state=GetAge.getting_age):
         await message.answer('Введите корректный возраст\n(Ограничение от 10 до 80)')
 
 @dp.message_handler(commands=['catalog'])
-async def search_music(message):
+async def cmd_catalog(message):
     if message.from_user.id == tokens.TG:
         user = database.get_all_music()
         if user:
@@ -115,7 +115,7 @@ async def getting_singer_music(message, state=Music_user.getting_singer_music):
 
 @dp.message_handler(lambda message: message.text == 'Выбрать музыку по номеру 🔢')
 async def search_num_music(message):
-    await message.answer('Введите номер', reply_markup=ReplyKeyboardRemove())
+    await message.answer('Введите номер', reply_markup=buttons.back_kb())
     await Music_user.getting_num_music.set()
 
 @dp.message_handler(content_types=['text'], state=Music_user.getting_num_music)
@@ -139,7 +139,7 @@ async def getting_num_music(message, state=Music_user.getting_num_music):
 
 
 @dp.message_handler(commands=['admin'])
-async def login_admin(message):
+async def cmd_admin(message):
     if message.from_user.id == tokens.TG:
         await message.answer('Вы вошли как администратор 🔓\nВыберите раздел ⬇️', reply_markup=buttons.admin_kb())
     else:
@@ -221,7 +221,42 @@ async def list_users_age(message):
     else:
         await message.answer('Вы не являетесь администратором 🔒т\nВыберите раздел ⬇️', reply_markup=buttons.menu_kb())
 
+@dp.message_handler(content_types=['text'])
+async def search_extra(message):
+    user = database.get_all_music()
+    for i in user:
+        l = i[0]
+    num_music = [str(i) for i in range(1, l)]
+    if message.text in num_music:
+        m = int(message.text)
+        user = database.get_music_num(m)
+        if user:
+            result1 = '⤵️ Вот что есть в базе:\n\n'
+            for i in user:
+                result1 += f'{i[0]}. Название: {i[2]}\nИсполнитель: {i[3]}\n'
+                result2 = f'{i[1]}'
+            await message.answer_audio(result2)
+            await message.answer(result1, reply_markup=buttons.menu_kb())
+        else:
+            await message.answer('Ничего не найдено 📂', reply_markup=buttons.menu_kb())
 
+    else:
+        m = message.text
+        user = database.get_music_name(m)
+        if user:
+            result1 = '⤵️ Вот что еще есть в базе:\n\n'
+            for i in user:
+                result1 += f'{i[0]}. Название: {i[2]}\nИсполнитель: {i[3]}\n'
+                result2 = f'{i[1]}'
+            await message.answer_audio(result2)
+            await message.answer(result1, reply_markup=buttons.menu_kb())
+        else:
+            await message.answer('Ничего не найдено 📂', reply_markup=buttons.menu_kb())
+
+
+@dp.message_handler()
+async def answer_not(message):
+    await message.answer('Выберите раздел ⬇️', reply_markup=buttons.menu_kb())
 
 # @dp.inline_handler()
 # async def inline_echo(inline_query: types.InlineQuery):
@@ -239,9 +274,6 @@ async def list_users_age(message):
 #     )
 #     await bot.answer_inline_query(inline_query_id=inline_query.id,
 #                                   results=[item])
-@dp.message_handler()
-async def answer_not(message):
-    await message.answer('Не понимаю', reply_markup=buttons.menu_kb())
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
