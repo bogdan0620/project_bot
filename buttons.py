@@ -17,7 +17,7 @@ def menu_kb():
     button0 = KeyboardButton('Выбрать музыку по номеру 🔢')
     button = KeyboardButton('Найти музыку по названию 🔎')
     button2 = KeyboardButton('Найти музыку по исполнителю 🔎')
-    kb.add(button0, button, button2)
+    kb.add(button2)
     return kb
 
 def admin_kb():
