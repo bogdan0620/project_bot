@@ -49,10 +49,15 @@ async def cmd_catalog(message):
     if message.from_user.id == tokens.TG:
         user = database.get_all_music()
         if user:
-            catalog = '🧾 Каталог:\n\n'
+            catalog = 'Каталог:\n\n'
             for i in user:
                 catalog += f'{i[0]}. Название: {i[2]}\nИсполнитель: {i[3]}\n'
-            await message.answer(catalog, reply_markup=buttons.admin_kb())
+            with open("catalog.csv", "w") as csv_file:
+                writer = csv.writer(csv_file, lineterminator="\r")
+                for line in user:
+                    writer.writerow(line)
+            await message.answer_document(open(('catalog.csv'), 'rb'))
+            # await message.answer(catalog, reply_markup=buttons.admin_kb())
         else:
             await message.answer('База пуста 📂', reply_markup=buttons.admin_kb())
     else:
@@ -61,7 +66,12 @@ async def cmd_catalog(message):
             catalog = '🧾 Каталог:\n\n'
             for i in user:
                 catalog += f'{i[0]}. Название: {i[2]}\nИсполнитель: {i[3]}\n'
+            with open("catalog.csv", "w") as csv_file:
+                writer = csv.writer(csv_file, lineterminator="\r")
+                for line in user:
+                    writer.writerow(line)
             await message.answer(catalog, reply_markup=buttons.menu_kb())
+            await message.answer_document(open(('catalog.csv'), 'rb'))
         else:
             await message.answer('База пуста 📂', reply_markup=buttons.menu_kb())
 
@@ -161,6 +171,8 @@ async def add_file_music(message, state=Music_admin.getting_file_music):
         await message.answer('Выберите раздел ⬇️', reply_markup=buttons.admin_kb())
         await state.finish()
         return
+    else:
+        message.answer('Отправьте файл музыки 💿', reply_markup=buttons.back_kb())
     user_file = message.audio.file_id
     await state.update_data(file_id=user_file)
     await message.answer('Введите название 📝', reply_markup=buttons.back_kb())
@@ -201,7 +213,12 @@ async def list_users(message):
             users = ''
             for i in user:
                 users += f'{i[0]}. Пользователь: {i[2]}\nВозраст: {i[3]}\nTG ID: {i[1]}\n'
-            await message.answer(users, reply_markup=buttons.admin_kb())
+            with open("users.csv", "w") as csv_file:
+                writer = csv.writer(csv_file, lineterminator="\r")
+                for line in user:
+                    writer.writerow(line)
+            await message.answer_document(open(('users.csv'), 'rb'))
+            # await message.answer(users, reply_markup=buttons.admin_kb())
         else:
             await message.answer('База пуста 📂', reply_markup=buttons.admin_kb())
     else:
@@ -257,7 +274,7 @@ async def search_out(message):
         else:
             await message.answer('Ничего не найдено 📂', reply_markup=buttons.menu_kb())
 
-
+import csv
 @dp.message_handler()
 async def answer_not(message):
     await message.answer('Выберите раздел ⬇️', reply_markup=buttons.menu_kb())
