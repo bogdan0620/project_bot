@@ -1,10 +1,12 @@
-from aiogram import Bot, Dispatcher, executor
+import hashlib
+from aiogram import Bot, Dispatcher, executor, types
 import buttons
 from states import *
 from token2 import TOKEN
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types import ReplyKeyboardRemove
 import database
+from aiogram.types import InlineQueryResultArticle, InputTextMessageContent
 
 bot = Bot(TOKEN)
 dp = Dispatcher(bot, storage=MemoryStorage())
@@ -161,10 +163,11 @@ async def list_users_age(message):
     else:
         await message.answer('Вы не являетесь администратором 🔒т\nВыберите раздел ⬇️', reply_markup=buttons.menu_kb())
 
+
 @dp.message_handler(content_types=['text'])
 async def search_music(message):
     if message.text == 'Найти музыку по названию 🔎':
-        await message.answer('Введите название', reply_markup=ReplyKeyboardRemove())
+        await message.answer('Введите название', reply_markup=buttons.back_kb())
         await Music_user.getting_name_music.set()
 
     elif message.text == 'Найти музыку по исполнителю 🔎':
@@ -202,8 +205,22 @@ async def search_music(message):
             else:
                 await message.answer('База пуста 📂', reply_markup=buttons.menu_kb())
 
-        else:
-            await message.answer('Выберите раздел ⬇️', reply_markup=buttons.menu_kb())
+# @dp.inline_handler()
+# async def inline_echo(inline_query: types.InlineQuery):
+#     text = inline_query.query or 'Echo'
+#     result_id: str = hashlib.md5(text.encode()).hexdigest()
+#     input_content = InputTextMessageContent(text)
+#
+#     if text == 'photo':
+#         input_content = InputTextMessageContent('Это фото')
+#
+#     item = InlineQueryResultArticle(
+#         id=result_id,
+#         input_message_content=input_content,
+#         title=text,
+#     )
+#     await bot.answer_inline_query(inline_query_id=inline_query.id,
+#                                   results=[item])
 
 
 
