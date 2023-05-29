@@ -171,8 +171,8 @@ async def add_file_music(message, state=Music_admin.getting_file_music):
         await message.answer('Выберите раздел ⬇️', reply_markup=buttons.admin_kb())
         await state.finish()
         return
-    else:
-        message.answer('Отправьте файл музыки 💿', reply_markup=buttons.back_kb())
+    elif message.text != '◀️ Назад':
+        await message.answer('Отправьте файл музыки 💿', reply_markup=buttons.back_kb())
     user_file = message.audio.file_id
     await state.update_data(file_id=user_file)
     await message.answer('Введите название 📝', reply_markup=buttons.back_kb())
