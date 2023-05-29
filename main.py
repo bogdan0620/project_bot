@@ -221,6 +221,10 @@ async def list_users_age(message):
     else:
         await message.answer('Вы не являетесь администратором 🔒т\nВыберите раздел ⬇️', reply_markup=buttons.menu_kb())
 
+@dp.message_handler(lambda message: message.text == 'Как искать?')
+async def how_to_search(message):
+    await message.answer('Напишите название трека который хотите найти или его порядковый номер\nУзнать порядковый номер трека можно из каталога\n/catalog', reply_markup=buttons.menu_kb())
+
 @dp.message_handler(content_types=['text'])
 async def search_out(message):
     user = database.get_all_music()
