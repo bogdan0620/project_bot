@@ -8,6 +8,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types import ReplyKeyboardRemove
 import database
 from aiogram.types import InlineQueryResultArticle, InputTextMessageContent
+import run
 
 bot = Bot(TOKEN)
 dp = Dispatcher(bot, storage=MemoryStorage())
@@ -47,33 +48,14 @@ async def age_user(message, state=GetAge.getting_age):
 @dp.message_handler(commands=['catalog'])
 async def cmd_catalog(message):
     if message.from_user.id == tokens.TG:
-        user = database.get_all_music()
-        if user:
-            catalog = 'Каталог:\n\n'
-            for i in user:
-                catalog += f'{i[0]}. Название: {i[2]}\nИсполнитель: {i[3]}\n'
-            with open("catalog.csv", "w") as csv_file:
-                writer = csv.writer(csv_file, lineterminator="\r")
-                for line in user:
-                    writer.writerow(line)
-            await message.answer_document(open(('catalog.csv'), 'rb'))
-            # await message.answer(catalog, reply_markup=buttons.admin_kb())
-        else:
-            await message.answer('База пуста 📂', reply_markup=buttons.admin_kb())
+        run.get_csv_file()
+        await message.answer_document(open(('catalog.csv'), 'rb'))
+        await message.answer('', reply_markup=buttons.admin_kb())
+
     else:
-        user = database.get_all_music()
-        if user:
-            catalog = '🧾 Каталог:\n\n'
-            for i in user:
-                catalog += f'{i[0]}. Название: {i[2]}\nИсполнитель: {i[3]}\n'
-            with open("catalog.csv", "w") as csv_file:
-                writer = csv.writer(csv_file, lineterminator="\r")
-                for line in user:
-                    writer.writerow(line)
-            await message.answer(catalog, reply_markup=buttons.menu_kb())
-            await message.answer_document(open(('catalog.csv'), 'rb'))
-        else:
-            await message.answer('База пуста 📂', reply_markup=buttons.menu_kb())
+        run.get_csv_file()
+        await message.answer_document(open(('catalog.csv'), 'rb'))
+        await message.answer('', reply_markup=buttons.admin_kb())
 
 @dp.message_handler(lambda message: message.text == 'Найти музыку по названию 🔎')
 async def search_name_music(message):
