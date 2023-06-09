@@ -8,7 +8,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types import ReplyKeyboardRemove
 import database
 from aiogram.types import InlineQueryResultArticle, InputTextMessageContent
-import run
+import csv_file
 
 bot = Bot(TOKEN)
 dp = Dispatcher(bot, storage=MemoryStorage())
@@ -48,12 +48,12 @@ async def age_user(message, state=GetAge.getting_age):
 @dp.message_handler(commands=['catalog'])
 async def cmd_catalog(message):
     if message.from_user.id == tokens.TG:
-        run.get_csv_file()
+        csv_file.get_csv_file()
         await message.answer_document(open(('catalog.csv'), 'rb'))
         await message.answer('', reply_markup=buttons.admin_kb())
 
     else:
-        run.get_csv_file()
+        csv_file.get_csv_file()
         await message.answer_document(open(('catalog.csv'), 'rb'))
         await message.answer('', reply_markup=buttons.admin_kb())
 
@@ -190,19 +190,9 @@ async def add_singer_music(message, state=Music_admin.getting_singer_music):
 @dp.message_handler(lambda message: message.text == 'Список пользователей')
 async def list_users(message):
     if message.from_user.id == tokens.TG:
-        user = database.get_users()
-        if user:
-            users = ''
-            for i in user:
-                users += f'{i[0]}. Пользователь: {i[2]}\nВозраст: {i[3]}\nTG ID: {i[1]}\n'
-            with open("users.csv", "w") as csv_file:
-                writer = csv.writer(csv_file, lineterminator="\r")
-                for line in user:
-                    writer.writerow(line)
-            await message.answer_document(open(('users.csv'), 'rb'))
-            # await message.answer(users, reply_markup=buttons.admin_kb())
-        else:
-            await message.answer('База пуста 📂', reply_markup=buttons.admin_kb())
+        csv_file.get_csv_users()
+        await message.answer_document(open(('users.csv'), 'rb'))
+
     else:
         await message.answer('Вы не являетесь администратором 🔒т\nВыберите раздел ⬇️', reply_markup=buttons.menu_kb())
 
