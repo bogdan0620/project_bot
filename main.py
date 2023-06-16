@@ -57,10 +57,10 @@ async def cmd_catalog(message):
         await message.answer_document(open(('catalog.csv'), 'rb'))
         await message.answer('', reply_markup=buttons.admin_kb())
 
-@dp.message_handler(lambda message: message.text == 'Найти музыку по названию 🔎')
-async def search_name_music(message):
-    await message.answer('Введите название', reply_markup=buttons.back_kb())
-    await Music_user.getting_name_music.set()
+# @dp.message_handler(lambda message: message.text == 'Найти музыку по названию 🔎')
+# async def search_name_music(message):
+#     await message.answer('Введите название', reply_markup=buttons.back_kb())
+#     await Music_user.getting_name_music.set()
 
 @dp.message_handler(content_types=['text'], state=Music_user.getting_name_music)
 async def getting_name_music(message, state=Music_user.getting_name_music):
@@ -81,10 +81,10 @@ async def getting_name_music(message, state=Music_user.getting_name_music):
         await message.answer('Ничего не найдено 📂', reply_markup=buttons.menu_kb())
     await state.finish()
 
-@dp.message_handler(lambda message: message.text == 'Найти музыку по исполнителю 🔎')
-async def search_singer_music(message):
-    await message.answer('Введите имя', reply_markup=ReplyKeyboardRemove())
-    await Music_user.getting_singer_music.set()
+# @dp.message_handler(lambda message: message.text == 'Найти музыку по исполнителю 🔎')
+# async def search_singer_music(message):
+#     await message.answer('Введите имя', reply_markup=ReplyKeyboardRemove())
+#     await Music_user.getting_singer_music.set()
 
 @dp.message_handler(content_types=['text'], state=Music_user.getting_singer_music)
 async def getting_singer_music(message, state=Music_user.getting_singer_music):
@@ -105,10 +105,10 @@ async def getting_singer_music(message, state=Music_user.getting_singer_music):
         await message.answer('Ничего не найдено 📂', reply_markup=buttons.menu_kb())
     await state.finish()
 
-@dp.message_handler(lambda message: message.text == 'Выбрать музыку по номеру 🔢')
-async def search_num_music(message):
-    await message.answer('Введите номер', reply_markup=buttons.back_kb())
-    await Music_user.getting_num_music.set()
+# @dp.message_handler(lambda message: message.text == 'Выбрать музыку по номеру 🔢')
+# async def search_num_music(message):
+#     await message.answer('Введите номер', reply_markup=buttons.back_kb())
+#     await Music_user.getting_num_music.set()
 
 @dp.message_handler(content_types=['text'], state=Music_user.getting_num_music)
 async def getting_num_music(message, state=Music_user.getting_num_music):
@@ -243,10 +243,21 @@ async def search_out(message):
                 result2 = f'{i[1]}'
             await message.answer_audio(result2)
             await message.answer(result1, reply_markup=buttons.menu_kb())
-        else:
-            await message.answer('Ничего не найдено 📂', reply_markup=buttons.menu_kb())
 
-import csv
+        else:
+            user = database.get_music_singer(m)
+            if user:
+                result1 = '⤵️ Вот что еще есть в базе:\n\n'
+                for i in user:
+                    result1 += f'{i[0]}. Название: {i[2]}\nИсполнитель: {i[3]}\n'
+                    result2 = f'{i[1]}'
+                await message.answer_audio(result2)
+                await message.answer(result1, reply_markup=buttons.menu_kb())
+
+            else:
+                await message.answer('Ничего не найдено 📂', reply_markup=buttons.menu_kb())
+
+
 @dp.message_handler()
 async def answer_not(message):
     await message.answer('Выберите раздел ⬇️', reply_markup=buttons.menu_kb())
