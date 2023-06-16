@@ -153,12 +153,11 @@ async def add_file_music(message, state=Music_admin.getting_file_music):
         await message.answer('Введите для поиска', reply_markup=buttons.admin_kb())
         await state.finish()
         return
-    elif message.text != '◀️ Назад':
-        await message.answer('Отправьте файл музыки 💿', reply_markup=buttons.back_kb())
     user_file = message.audio.file_id
     await state.update_data(file_id=user_file)
     await message.answer('Введите название 📝', reply_markup=buttons.back_kb())
     await Music_admin.getting_name_music.set()
+
 
 @dp.message_handler(content_types=['text'], state=Music_admin.getting_name_music)
 async def add_name_music(message, state=Music_admin.getting_name_music):
