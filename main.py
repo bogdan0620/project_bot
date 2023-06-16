@@ -20,7 +20,7 @@ async def cmd_start(message):
     checker = database.cheсk_user(user_id)
     if checker:
         await message.answer_sticker('CAACAgIAAxkBAAIFYmRjeHZS7w1EnHLodGf22k7GXGT3AAKTLQACrFEYS3DrE5B4jXmXLwQ')
-        await message.answer('Выберите раздел ⬇️', reply_markup=buttons.menu_kb())
+        await message.answer('Введите для поиска', reply_markup=buttons.menu_kb())
     else:
         await message.answer_sticker('CAACAgIAAxkBAAIFYmRjeHZS7w1EnHLodGf22k7GXGT3AAKTLQACrFEYS3DrE5B4jXmXLwQ')
         await message.answer('Привет. Это бот для скачивания музыки 🎶\nВведите ваш возраст', reply_markup=buttons.age_kb())
@@ -39,7 +39,7 @@ async def age_user(message, state=GetAge.getting_age):
         tg_id = message.from_user.id
         name = message.from_user.full_name
         database.add_user(tg_id, name, age)
-        await message.answer('Выберите раздел ⬇️', reply_markup=buttons.menu_kb())
+        await message.answer('Введите для поиска', reply_markup=buttons.menu_kb())
         await state.finish()
 
     else:
@@ -49,13 +49,13 @@ async def age_user(message, state=GetAge.getting_age):
 async def cmd_catalog(message):
     if message.from_user.id == tokens.TG:
         csv_file.get_csv_file()
-        await message.answer_document(open(('catalog.csv'), 'rb'))
-        await message.answer('', reply_markup=buttons.admin_kb())
+        await message.answer('Каталог', reply_markup=buttons.admin_kb())
+        await message.answer_document(open(('Каталог.csv'), 'rb'))
 
     else:
         csv_file.get_csv_file()
-        await message.answer_document(open(('catalog.csv'), 'rb'))
-        await message.answer('', reply_markup=buttons.admin_kb())
+        await message.answer('Каталог', reply_markup=buttons.admin_kb())
+        await message.answer_document(open(('Каталог.csv'), 'rb'))
 
 # @dp.message_handler(lambda message: message.text == 'Найти музыку по названию 🔎')
 # async def search_name_music(message):
@@ -65,7 +65,7 @@ async def cmd_catalog(message):
 @dp.message_handler(content_types=['text'], state=Music_user.getting_name_music)
 async def getting_name_music(message, state=Music_user.getting_name_music):
     if message.text == '◀️ Назад':
-        await message.answer('Выберите раздел ⬇️', reply_markup=buttons.menu_kb())
+        await message.answer('Введите для поиска', reply_markup=buttons.menu_kb())
         await state.finish()
         return
     m = message.text
@@ -89,7 +89,7 @@ async def getting_name_music(message, state=Music_user.getting_name_music):
 @dp.message_handler(content_types=['text'], state=Music_user.getting_singer_music)
 async def getting_singer_music(message, state=Music_user.getting_singer_music):
     if message.text == '◀️ Назад':
-        await message.answer('Выберите раздел ⬇️', reply_markup=buttons.menu_kb())
+        await message.answer('Введите для поиска', reply_markup=buttons.menu_kb())
         await state.finish()
         return
     m = message.text
@@ -113,7 +113,7 @@ async def getting_singer_music(message, state=Music_user.getting_singer_music):
 @dp.message_handler(content_types=['text'], state=Music_user.getting_num_music)
 async def getting_num_music(message, state=Music_user.getting_num_music):
     if message.text == '◀️ Назад':
-        await message.answer('Выберите раздел ⬇️', reply_markup=buttons.menu_kb())
+        await message.answer('Введите для поиска', reply_markup=buttons.menu_kb())
         await state.finish()
         return
     m = message.text
@@ -133,9 +133,9 @@ async def getting_num_music(message, state=Music_user.getting_num_music):
 @dp.message_handler(commands=['admin'])
 async def cmd_admin(message):
     if message.from_user.id == tokens.TG:
-        await message.answer('Вы вошли как администратор 🔓\nВыберите раздел ⬇️', reply_markup=buttons.admin_kb())
+        await message.answer('Вы вошли как администратор 🔓\nВведите для поиска', reply_markup=buttons.admin_kb())
     else:
-        await message.answer('Вы не являетесь администратором 🔒\nВыберите раздел ⬇️', reply_markup=buttons.menu_kb())
+        await message.answer('Вы не являетесь администратором 🔒\nВведите для поиска', reply_markup=buttons.menu_kb())
 
 
 @dp.message_handler(lambda message: message.text == 'Добавить музыку 📨')
@@ -144,13 +144,13 @@ async def add_music(message):
         await message.answer('Отправьте файл музыки 💿', reply_markup=buttons.back_kb())
         await Music_admin.getting_file_music.set()
     else:
-        await message.answer('Вы не являетесь администратором 🔒\nВыберите раздел ⬇️', reply_markup=buttons.menu_kb())
+        await message.answer('Вы не являетесь администратором 🔒\nВведите для поиска', reply_markup=buttons.menu_kb())
 
 
 @dp.message_handler(content_types=['audio', 'text'], state=Music_admin.getting_file_music)
 async def add_file_music(message, state=Music_admin.getting_file_music):
     if message.text == '◀️ Назад':
-        await message.answer('Выберите раздел ⬇️', reply_markup=buttons.admin_kb())
+        await message.answer('Введите для поиска', reply_markup=buttons.admin_kb())
         await state.finish()
         return
     elif message.text != '◀️ Назад':
@@ -194,7 +194,7 @@ async def list_users(message):
         await message.answer_document(open(('users.csv'), 'rb'))
 
     else:
-        await message.answer('Вы не являетесь администратором 🔒т\nВыберите раздел ⬇️', reply_markup=buttons.menu_kb())
+        await message.answer('Вы не являетесь администратором 🔒т\nВведите для поиска', reply_markup=buttons.menu_kb())
 
 @dp.message_handler(lambda message: message.text == 'Список возрастов пользователей')
 async def list_users_age(message):
@@ -208,11 +208,11 @@ async def list_users_age(message):
         else:
             await message.answer('База пуста 📂', reply_markup=buttons.admin_kb())
     else:
-        await message.answer('Вы не являетесь администратором 🔒т\nВыберите раздел ⬇️', reply_markup=buttons.menu_kb())
+        await message.answer('Вы не являетесь администратором 🔒т\nВведите для поиска', reply_markup=buttons.menu_kb())
 
 @dp.message_handler(lambda message: message.text == 'Как искать?')
 async def how_to_search(message):
-    await message.answer('Напишите название трека который хотите найти или его порядковый номер\nУзнать порядковый номер трека можно из каталога\n/catalog', reply_markup=buttons.menu_kb())
+    await message.answer('Для поиска введите название трека или имя исполнителя, также поиск работает по порядковому номеру трека\nУзнать порядковый номер трека можно из каталога /catalog', reply_markup=buttons.menu_kb())
 
 @dp.message_handler(content_types=['text'])
 async def search_out(message):
@@ -260,7 +260,7 @@ async def search_out(message):
 
 @dp.message_handler()
 async def answer_not(message):
-    await message.answer('Выберите раздел ⬇️', reply_markup=buttons.menu_kb())
+    await message.answer('Введите для поиска', reply_markup=buttons.menu_kb())
 
 # @dp.inline_handler()
 # async def inline_echo(inline_query: types.InlineQuery):
