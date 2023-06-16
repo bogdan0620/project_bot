@@ -49,13 +49,13 @@ async def age_user(message, state=GetAge.getting_age):
 async def cmd_catalog(message):
     if message.from_user.id == tokens.TG:
         csv_file.get_csv_file()
-        await message.answer('Каталог', reply_markup=buttons.admin_kb())
         await message.answer_document(open(('Каталог.csv'), 'rb'))
+        await message.answer('Введите для поиска', reply_markup=buttons.admin_kb())
 
     else:
         csv_file.get_csv_file()
-        await message.answer('Каталог', reply_markup=buttons.admin_kb())
         await message.answer_document(open(('Каталог.csv'), 'rb'))
+        await message.answer('Введите для поиска', reply_markup=buttons.admin_kb())
 
 # @dp.message_handler(lambda message: message.text == 'Найти музыку по названию 🔎')
 # async def search_name_music(message):
