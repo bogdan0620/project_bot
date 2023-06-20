@@ -9,6 +9,7 @@ from aiogram.types import ReplyKeyboardRemove
 import database
 from aiogram.types import InlineQueryResultArticle, InputTextMessageContent
 import csv_file
+from background import keep_alive
 
 bot = Bot(TOKEN)
 dp = Dispatcher(bot, storage=MemoryStorage())
@@ -49,12 +50,12 @@ async def age_user(message, state=GetAge.getting_age):
 async def cmd_catalog(message):
     if message.from_user.id == tokens.TG:
         csv_file.get_csv_file()
-        await message.answer_document(open(('Каталог.csv'), 'rb'))
+        await message.answer_document(open(('Catalog.csv'), 'rb'))
         await message.answer('Введите для поиска', reply_markup=buttons.admin_kb())
 
     else:
         csv_file.get_csv_file()
-        await message.answer_document(open(('Каталог.csv'), 'rb'))
+        await message.answer_document(open(('Catalog.csv'), 'rb'))
         await message.answer('Введите для поиска', reply_markup=buttons.admin_kb())
 
 # @dp.message_handler(lambda message: message.text == 'Найти музыку по названию 🔎')
@@ -277,6 +278,8 @@ async def answer_not(message):
 #     )
 #     await bot.answer_inline_query(inline_query_id=inline_query.id,
 #                                   results=[item])
+
+keep_alive()
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
