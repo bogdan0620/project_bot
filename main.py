@@ -191,7 +191,7 @@ async def add_singer_music(message, state=Music_admin.getting_singer_music):
 async def list_users(message):
     if message.from_user.id == tokens.TG:
         csv_file.get_csv_users()
-        await message.answer_document(open(('users.csv'), 'rb'))
+        await message.answer_document(open(('users.csv'), 'rb', encoding='utf-8-sig))
 
     else:
         await message.answer('Вы не являетесь администратором 🔒т\nВведите для поиска', reply_markup=buttons.menu_kb())
