@@ -7,7 +7,7 @@ from tokens import TOKEN
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types import ReplyKeyboardRemove
 import database
-from aiogram.types import InlineQueryResultArticle, InputTextMessageContent
+# from aiogram.types import
 import csv_file
 # from background import keep_alive
 
@@ -20,12 +20,25 @@ async def cmd_start(message):
     user_id = message.from_user.id
     checker = database.cheсk_user(user_id)
     if checker:
+        all_music = database.get_all_music()
         await message.answer_sticker('CAACAgIAAxkBAAIFYmRjeHZS7w1EnHLodGf22k7GXGT3AAKTLQACrFEYS3DrE5B4jXmXLwQ')
-        await message.answer('Введите для поиска', reply_markup=buttons.menu_kb())
+        await bot.send_message(chat_id=message.from_user.id, text='Введите для поиска', reply_markup=buttons.main_menu_kb(all_music))
     else:
         await message.answer_sticker('CAACAgIAAxkBAAIFYmRjeHZS7w1EnHLodGf22k7GXGT3AAKTLQACrFEYS3DrE5B4jXmXLwQ')
         await message.answer('Привет. Это бот для скачивания музыки 🎶\nВведите ваш возраст', reply_markup=buttons.age_kb())
         await GetAge.getting_age.set()
+
+
+@dp.callback_query_handler()
+async def callback_list(callback):
+    await bot.answer_callback_query(callback.id, f'Номер трека: {callback.data}')
+    music = database.get_music_num(callback.data)
+    for i in music:
+        result1 = f'{i[1]}'
+        result2 = f'{i[0]}. {i[3]} – {i[2]}'
+    # await callback.message.answer_audio(result2)
+    await bot.send_audio(callback.from_user.id, audio=result1, caption=result2)
+
 
 @dp.message_handler(state=GetAge.getting_age, content_types=['text'])
 async def age_user(message, state=GetAge.getting_age):
@@ -33,7 +46,8 @@ async def age_user(message, state=GetAge.getting_age):
     users_ages = [str(i) for i in range(10, 81)]
 
     if user_answer == "Зачем нужен возраст?":
-        await message.answer('Возраст нужен для наилучшей персонализации музыки под определенный возраст (скоро)\nВведите возраст', reply_markup=ReplyKeyboardRemove())
+        await message.answer('Возраст нужен для наилучшей персонализации музыки под определенный возраст (скоро)\n'
+                             'Введите возраст', reply_markup=ReplyKeyboardRemove())
 
     elif user_answer in users_ages:
         age = message.text
@@ -46,9 +60,10 @@ async def age_user(message, state=GetAge.getting_age):
     else:
         await message.answer('Введите корректный возраст\n(Ограничение от 10 до 80)')
 
+
 @dp.message_handler(commands=['catalog'])
 async def cmd_catalog(message):
-    if message.from_user.id == tokens.TG:
+    if message.from_user.id in tokens.TG:
         csv_file.get_csv_file()
         await message.answer_document(open(('Catalog.csv'), 'rb'))
         await message.answer('Введите для поиска', reply_markup=buttons.admin_kb())
@@ -62,6 +77,7 @@ async def cmd_catalog(message):
 # async def search_name_music(message):
 #     await message.answer('Введите название', reply_markup=buttons.back_kb())
 #     await Music_user.getting_name_music.set()
+
 
 @dp.message_handler(content_types=['text'], state=Music_user.getting_name_music)
 async def getting_name_music(message, state=Music_user.getting_name_music):
@@ -87,6 +103,7 @@ async def getting_name_music(message, state=Music_user.getting_name_music):
 #     await message.answer('Введите имя', reply_markup=ReplyKeyboardRemove())
 #     await Music_user.getting_singer_music.set()
 
+
 @dp.message_handler(content_types=['text'], state=Music_user.getting_singer_music)
 async def getting_singer_music(message, state=Music_user.getting_singer_music):
     if message.text == '◀️ Назад':
@@ -111,6 +128,7 @@ async def getting_singer_music(message, state=Music_user.getting_singer_music):
 #     await message.answer('Введите номер', reply_markup=buttons.back_kb())
 #     await Music_user.getting_num_music.set()
 
+
 @dp.message_handler(content_types=['text'], state=Music_user.getting_num_music)
 async def getting_num_music(message, state=Music_user.getting_num_music):
     if message.text == '◀️ Назад':
@@ -133,7 +151,7 @@ async def getting_num_music(message, state=Music_user.getting_num_music):
 
 @dp.message_handler(commands=['admin'])
 async def cmd_admin(message):
-    if message.from_user.id == tokens.TG:
+    if message.from_user.id in tokens.TG:
         await message.answer('Вы вошли как администратор 🔓\nВведите для поиска', reply_markup=buttons.admin_kb())
     else:
         await message.answer('Вы не являетесь администратором 🔒\nВведите для поиска', reply_markup=buttons.menu_kb())
@@ -141,7 +159,7 @@ async def cmd_admin(message):
 
 @dp.message_handler(lambda message: message.text == 'Добавить музыку 📨')
 async def add_music(message):
-    if message.from_user.id == tokens.TG:
+    if message.from_user.id in tokens.TG:
         await message.answer('Отправьте файл музыки 💿', reply_markup=buttons.back_kb())
         await Music_admin.getting_file_music.set()
     else:
@@ -171,6 +189,7 @@ async def add_name_music(message, state=Music_admin.getting_name_music):
     await message.answer('Введите исполнителя 📝', reply_markup=buttons.back_kb())
     await Music_admin.getting_singer_music.set()
 
+
 @dp.message_handler(content_types=['text'], state=Music_admin.getting_singer_music)
 async def add_singer_music(message, state=Music_admin.getting_singer_music):
     if message.text == '◀️ Назад':
@@ -187,18 +206,20 @@ async def add_singer_music(message, state=Music_admin.getting_singer_music):
     await state.finish()
     await message.answer('Выберите действие ⬇️', reply_markup=buttons.admin_kb())
 
+
 @dp.message_handler(lambda message: message.text == 'Список пользователей')
 async def list_users(message):
-    if message.from_user.id == tokens.TG:
+    if message.from_user.id in tokens.TG:
         csv_file.get_csv_users()
         await message.answer_document(open(('users.csv'), 'rb', encoding='utf-8-sig'))
 
     else:
         await message.answer('Вы не являетесь администратором 🔒т\nВведите для поиска', reply_markup=buttons.menu_kb())
 
+
 @dp.message_handler(lambda message: message.text == 'Список возрастов пользователей')
 async def list_users_age(message):
-    if message.from_user.id == tokens.TG:
+    if message.from_user.id in tokens.TG:
         user = database.get_users()
         if user:
             users = ''
@@ -210,9 +231,12 @@ async def list_users_age(message):
     else:
         await message.answer('Вы не являетесь администратором 🔒т\nВведите для поиска', reply_markup=buttons.menu_kb())
 
+
 @dp.message_handler(lambda message: message.text == 'Как искать?')
 async def how_to_search(message):
-    await message.answer('Для поиска введите название трека или имя исполнителя, также поиск работает по порядковому номеру трека\nУзнать порядковый номер трека можно из каталога /catalog', reply_markup=buttons.menu_kb())
+    await message.answer('Для поиска введите название трека или имя исполнителя, также поиск работает по порядковому номеру трека\n'
+                         'Узнать порядковый номер трека можно из каталога /catalog', reply_markup=buttons.menu_kb())
+
 
 @dp.message_handler(content_types=['text'])
 async def search_out(message):
@@ -260,24 +284,13 @@ async def search_out(message):
 
 @dp.message_handler()
 async def answer_not(message):
+    await message.answer('Введите для поиска', reply_markup=buttons.menu_kb())\
+
+@dp.message_handler(content_types=types.ContentType.ANY)
+async def unknown_message(message):
     await message.answer('Введите для поиска', reply_markup=buttons.menu_kb())
 
-# @dp.inline_handler()
-# async def inline_echo(inline_query: types.InlineQuery):
-#     text = inline_query.query or 'Echo'
-#     result_id: str = hashlib.md5(text.encode()).hexdigest()
-#     input_content = InputTextMessageContent(text)
-#
-#     if text == 'photo':
-#         input_content = InputTextMessageContent('Это фото')
-#
-#     item = InlineQueryResultArticle(
-#         id=result_id,
-#         input_message_content=input_content,
-#         title=text,
-#     )
-#     await bot.answer_inline_query(inline_query_id=inline_query.id,
-#                                   results=[item])
+
 
 # keep_alive()
 
